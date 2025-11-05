@@ -1,0 +1,358 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Centro de Comando - Response Schemas",
+  "description": "Schemas JSON para respostas dos comandos do CC",
+  "version": "1.0.0",
+  "schemas": {
+    "intake_response": {
+      "type": "object",
+      "required": ["intake_report", "metrics"],
+      "properties": {
+        "intake_report": {
+          "type": "object",
+          "required": [
+            "objetivo",
+            "restricoes_normalizadas",
+            "sucesso_criterios",
+            "artefatos_confirmados",
+            "lacunas",
+            "risco_inicial"
+          ],
+          "properties": {
+            "objetivo": {
+              "type": "string",
+              "description": "Objetivo normalizado e mensurável"
+            },
+            "restricoes_normalizadas": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Lista de restrições categorizadas"
+            },
+            "sucesso_criterios": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Critérios mensuráveis de sucesso"
+            },
+            "artefatos_confirmados": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Artefatos que serão produzidos"
+            },
+            "lacunas": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Informações faltantes ou ambiguidades"
+            },
+            "risco_inicial": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Riscos identificados (BAIXO|MÉDIO|ALTO)"
+            }
+          }
+        },
+        "metrics": {
+          "$ref": "#/definitions/metrics"
+        }
+      }
+    },
+    "design_response": {
+      "type": "object",
+      "required": ["variantes", "matriz_tradeoffs", "recomendacao", "tests", "metrics"],
+      "properties": {
+        "variantes": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["id", "descricao", "vantagens", "riscos", "quando_usar"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^v[0-9]+$",
+                "description": "ID único (v1, v2, v3)"
+              },
+              "descricao": {
+                "type": "string",
+                "description": "Descrição concisa da variante"
+              },
+              "vantagens": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "riscos": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "quando_usar": {
+                "type": "string",
+                "description": "Cenário ideal para esta variante"
+              }
+            }
+          }
+        },
+        "matriz_tradeoffs": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "required": ["criterio", "votos"],
+            "properties": {
+              "criterio": {
+                "type": "string"
+              },
+              "votos": {
+                "type": "object",
+                "description": "Avaliação A|B|C|D para cada variante"
+              }
+            }
+          }
+        },
+        "recomendacao": {
+          "type": "string",
+          "description": "Variante recomendada (v1|v2|v3)"
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Justificativa detalhada da recomendação"
+        },
+        "tests": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string",
+            "description": "Testes sugeridos para validação"
+          }
+        },
+        "metrics": {
+          "$ref": "#/definitions/metrics"
+        }
+      }
+    },
+    "lint_response": {
+      "type": "object",
+      "required": ["achados", "fixes_sugeridos", "metrics"],
+      "properties": {
+        "achados": {
+          "type": "object",
+          "required": ["bloqueadores", "avisos", "melhorias"],
+          "properties": {
+            "bloqueadores": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Problemas CRITICAL que impedem uso"
+            },
+            "avisos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Problemas HIGH que devem ser corrigidos"
+            },
+            "melhorias": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Oportunidades de melhoria (MEDIUM|LOW)"
+            }
+          }
+        },
+        "fixes_sugeridos": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Correções específicas sugeridas"
+        },
+        "metrics": {
+          "$ref": "#/definitions/metrics"
+        }
+      }
+    },
+    "simulate_response": {
+      "type": "object",
+      "required": ["gate_results", "policy_checklist_result", "risco", "metrics"],
+      "properties": {
+        "gate_results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["gate", "pass", "falhas"],
+            "properties": {
+              "gate": {
+                "type": "string",
+                "enum": ["Analista", "Handoff", "Redator", "Revisor"]
+              },
+              "pass": {
+                "type": "boolean"
+              },
+              "falhas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "policy_checklist_result": {
+          "$ref": "#/definitions/policy_checklist"
+        },
+        "risco": {
+          "type": "string",
+          "enum": ["Baixo", "Médio", "Alto"]
+        },
+        "metrics": {
+          "$ref": "#/definitions/metrics"
+        }
+      }
+    },
+    "policy_response": {
+      "type": "object",
+      "required": ["policy_checklist_result", "alertas", "metrics"],
+      "properties": {
+        "policy_checklist_result": {
+          "$ref": "#/definitions/policy_checklist"
+        },
+        "alertas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["xml"],
+            "properties": {
+              "xml": {
+                "type": "string",
+                "description": "Alerta de governança em formato XML"
+              }
+            }
+          }
+        },
+        "metrics": {
+          "$ref": "#/definitions/metrics"
+        }
+      }
+    },
+    "pack_response": {
+      "type": "object",
+      "required": ["pack", "changelog", "metrics"],
+      "properties": {
+        "pack": {
+          "type": "object",
+          "required": ["versao", "itens"],
+          "properties": {
+            "versao": {
+              "type": "string",
+              "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$",
+              "description": "Versão SemVer (vX.Y.Z)"
+            },
+            "itens": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["nome", "modelo", "path", "hash"],
+                "properties": {
+                  "nome": {
+                    "type": "string"
+                  },
+                  "modelo": {
+                    "type": "string",
+                    "enum": ["Claude", "Gemini", "ChatGPT", "Agnóstico"]
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "hash": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "changelog": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metrics": {
+          "$ref": "#/definitions/metrics"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "metrics": {
+      "type": "object",
+      "required": ["schema_compliance", "elapsed_ms"],
+      "properties": {
+        "schema_compliance": {
+          "type": "boolean",
+          "description": "Se a response está conforme o schema"
+        },
+        "elapsed_ms": {
+          "type": "integer",
+          "description": "Tempo de execução em milissegundos"
+        },
+        "token_count": {
+          "type": "integer",
+          "description": "Total de tokens usados (opcional)"
+        },
+        "model_used": {
+          "type": "string",
+          "description": "Modelo LLM usado (opcional)"
+        },
+        "temperature": {
+          "type": "number",
+          "description": "Temperatura usada (opcional)"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp ISO 8601 (opcional)"
+        }
+      }
+    },
+    "policy_checklist": {
+      "type": "object",
+      "required": ["passes", "fails"],
+      "properties": {
+        "passes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^P[1-8]$"
+          },
+          "description": "Políticas que passaram"
+        },
+        "fails": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^P[1-8]$"
+          },
+          "description": "Políticas que falharam"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  TEMPLATE: Alerta de Governança
+  Sistema Dante - Centro de Comando
+  Versão: 1.0.0
+
+  Este template define o formato padrão para alertas de governança
+  emitidos pelo comando /policy quando violações são detectadas.
+-->
+
+<alerta_governanca version="1.0">
+
+  <!-- Timestamp ISO 8601 da detecção -->
+  <timestamp>2025-11-05T10:30:00Z</timestamp>
+
+  <!-- Código da violação detectada -->
+  <violacao codigo="VedacaoEmenta|FonteNaoAutorizada|RastreabilidadeInsuficiente|BlueprintAusente|CopiaSentenca|ModoJuriIgnorado|DispositivoAlterado|FidelidadeViolada"/>
+
+  <!-- Fonte da política violada -->
+  <fonte_politica>
+    [D] Maestro V5.2 / Política PX
+  </fonte_politica>
+
+  <!-- Trecho exato que viola a política -->
+  <trecho_conflitante>
+    <![CDATA[
+    [Copiar aqui o trecho EXATO do artefato que viola a política.
+     Use CDATA para preservar formatação e caracteres especiais.]
+    ]]>
+  </trecho_conflitante>
+
+  <!-- Descrição objetiva do impacto da violação -->
+  <impacto>
+    [Descrever de forma clara e objetiva qual o risco ou efeito negativo desta violação.
+     Exemplo: "Produção de ementa proibida levará a rejeição do voto pelo Gabinete."
+     Foco em consequências práticas e mensuráveis.]
+  </impacto>
+
+  <!-- Alternativa em conformidade com a política -->
+  <alternativa_compativel>
+    [Sugerir passo concreto e acionável que esteja em conformidade com a política.
+     Exemplo: "Remover seção EMENTA e iniciar diretamente com I. RELATÓRIO"
+     Deve ser específica o suficiente para ser implementada imediatamente.]
+  </alternativa_compativel>
+
+  <!-- Ação recomendada -->
+  <acao_recomendada>
+    Prosseguir|Corrigir|Abortar
+    <!--
+      Prosseguir: Permitir continuar com aviso (violação LOW/MEDIUM)
+      Corrigir: Recomendar fortemente correção (violação HIGH)
+      Abortar: Bloquear completamente (violação CRITICAL)
+    -->
+  </acao_recomendada>
+
+  <!-- Se necessita confirmação explícita do operador -->
+  <necessita_confirmacao>
+    true|false
+    <!--
+      true: Operador deve aprovar explicitamente antes de prosseguir
+      false: Pode prosseguir automaticamente após correção
+    -->
+  </necessita_confirmacao>
+
+  <!-- Severidade da violação -->
+  <severidade>
+    CRITICAL|HIGH|MEDIUM|LOW
+    <!--
+      CRITICAL: Bloqueia completamente (P1, P2, P5, P7)
+      HIGH: Aviso forte, correção recomendada (P3, P4, P6, P8)
+      MEDIUM: Melhoria sugerida, não bloqueia
+      LOW: Informativo, boas práticas
+    -->
+  </severidade>
+
+</alerta_governanca>
+
+
+<!-- EXEMPLOS DE USO -->
+
+<!-- Exemplo 1: Violação P2 (Vedação de Ementa) -->
+<!--
+<alerta_governanca version="1.0">
+  <timestamp>2025-11-05T10:30:00Z</timestamp>
+  <violacao codigo="VedacaoEmenta"/>
+  <fonte_politica>[D] Maestro V5.2 / Política P2</fonte_politica>
+  <trecho_conflitante>
+    <![CDATA[
+    EMENTA
+    APELAÇÃO CRIMINAL. FURTO QUALIFICADO. AUTORIA E MATERIALIDADE COMPROVADAS.
+    RECURSO CONHECIDO E DESPROVIDO.
+    ]]>
+  </trecho_conflitante>
+  <impacto>
+    Produção de ementa proibida levará a rejeição do voto pelo Gabinete.
+    Violação de política CRITICAL do Sistema Dante.
+  </impacto>
+  <alternativa_compativel>
+    Remover seção EMENTA completamente e iniciar diretamente com:
+    I. RELATÓRIO
+    [conteúdo do relatório...]
+  </alternativa_compativel>
+  <acao_recomendada>Abortar</acao_recomendada>
+  <necessita_confirmacao>true</necessita_confirmacao>
+  <severidade>CRITICAL</severidade>
+</alerta_governanca>
+-->
+
+<!-- Exemplo 2: Violação P4 (Rastreabilidade de Jurisprudência) -->
+<!--
+<alerta_governanca version="1.0">
+  <timestamp>2025-11-05T10:35:00Z</timestamp>
+  <violacao codigo="RastreabilidadeInsuficiente"/>
+  <fonte_politica>[D] Maestro V5.2 / Política P4</fonte_politica>
+  <trecho_conflitante>
+    <![CDATA[
+    Conforme jurisprudência consolidada do STJ, o crime de furto qualificado...
+    ]]>
+  </trecho_conflitante>
+  <impacto>
+    Citação sem rastreabilidade impede verificação e compromete credibilidade judicial.
+  </impacto>
+  <alternativa_compativel>
+    Adicionar identificação mínima: Tribunal + Número do processo.
+    Exemplo: "Conforme STJ, REsp 1.234.567, o crime de furto qualificado..."
+
+    Ideal: Incluir também Relator e Data.
+    Exemplo: "Conforme STJ, REsp 1.234.567, Rel. Min. João Silva, j. 15/03/2024..."
+  </alternativa_compativel>
+  <acao_recomendada>Corrigir</acao_recomendada>
+  <necessita_confirmacao>false</necessita_confirmacao>
+  <severidade>HIGH</severidade>
+</alerta_governanca>
+-->
+
+<!-- Exemplo 3: Violação P3 (Modo Júri) -->
+<!--
+<alerta_governanca version="1.0">
+  <timestamp>2025-11-05T10:40:00Z</timestamp>
+  <violacao codigo="ModoJuriIgnorado"/>
+  <fonte_politica>[D] Maestro V5.2 / Política P3</fonte_politica>
+  <trecho_conflitante>
+    <![CDATA[
+    O réu matou a vítima com disparos de arma de fogo, conforme laudo pericial.
+    ]]>
+  </trecho_conflitante>
+  <impacto>
+    Afirmação categórica sobre autoria em crime doloso contra a vida viola competência do Júri.
+    Pode resultar em nulidade processual.
+  </impacto>
+  <alternativa_compativel>
+    Usar linguagem de prelibação:
+    "Há indícios de que o acusado teria causado a morte da vítima com disparos de arma de fogo, conforme laudo pericial."
+
+    Ou: "Elementos indicam que o acusado aparenta ter provocado a morte da vítima..."
+  </alternativa_compativel>
+  <acao_recomendada>Corrigir</acao_recomendada>
+  <necessita_confirmacao>false</necessita_confirmacao>
+  <severidade>HIGH</severidade>
+</alerta_governanca>
+-->
+
+<!-- Exemplo 4: Violação P7 (Dispositivo Canônico Alterado) -->
+<!--
+<alerta_governanca version="1.0">
+  <timestamp>2025-11-05T10:45:00Z</timestamp>
+  <violacao codigo="DispositivoAlterado"/>
+  <fonte_politica>[D] Maestro V5.2 / Política P7</fonte_politica>
+  <trecho_conflitante>
+    <![CDATA[
+    III. DISPOSITIVO
+
+    Ante o exposto, conheço do recurso e nego-lhe provimento, mantendo a sentença.
+    ]]>
+  </trecho_conflitante>
+  <impacto>
+    Dispositivo alterado pode causar inconsistência jurídica e retrabalho.
+    Dispositivo do Handoff é canônico e DEVE ser preservado exatamente.
+  </impacto>
+  <alternativa_compativel>
+    Restaurar dispositivo EXATO do Handoff:
+    "Ante o exposto, voto por conhecer do recurso e negar-lhe provimento, mantendo integralmente a sentença condenatória."
+
+    (Verificar <dispositivo_canonico> no Handoff XML)
+  </alternativa_compativel>
+  <acao_recomendada>Abortar</acao_recomendada>
+  <necessita_confirmacao>true</necessita_confirmacao>
+  <severidade>CRITICAL</severidade>
+</alerta_governanca>
+-->
